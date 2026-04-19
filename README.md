@@ -25,12 +25,25 @@ Open [http://localhost:3000](http://localhost:3000).
 | `→` | Next image (no label) |
 | `←` | Previous image |
 
-
-
-3. Optionally edit label names in the right panel and click **Save Labels**.
+3. Optionally rename the default labels in the right panel.
 4. Click **Export CSV** or **Export JSON** to download your annotations.
 
-### Please note again that default label texts are `Positive` and `Negative`, you can change it as needed, such as `Tangling`,`Not-tangling`, then save them.
+Please note again that default label texts are `Positive` and `Negative`, you can change it as needed, such as `Tangling`,`Not-tangling`, then save them-- from the **Advance Settings** option
+
+## Multi-Class Labels
+
+Up to 10 labels are supported. Open **Advanced Labels** in the sidebar to add extra classes.
+
+| Key | Action |
+|-----|--------|
+| `P` | Label 1 (default: Positive) |
+| `N` | Label 2 (default: Negative) |
+| `3` | Label 3 |
+| `4` | Label 4 |
+| … | … |
+| `0` | Label 10 |
+
+Click **Save Labels** after editing, then use the number keys to annotate.
 
 ## Notes
 
