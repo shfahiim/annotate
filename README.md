@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Annotate
 
-## Getting Started
+Fast, keyboard-driven image classification tool. Runs locally in your browser.
 
-First, run the development server:
+## Installation
 
 ```bash
+git clone <repo-url>
+cd annotate
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How to Use
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Click **Select Image Folder** and pick a folder of images.
+2. Use keyboard shortcuts to annotate:
 
-## Learn More
+| Key | Action |
+|-----|--------|
+| `P` | Label as Positive, advance to next |
+| `N` | Label as Negative, advance to next |
+| `→` | Next image (no label) |
+| `←` | Previous image |
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Optionally edit label names in the right panel and click **Save Labels**.
+4. Click **Export CSV** or **Export JSON** to download your annotations.
 
-## Deploy on Vercel
+### Please note again that default label texts are `Positive` and `Negative`, you can change it as needed, such as `Tangling`,`Not-tangling`, then save them.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Images never leave your machine — loaded as blob URLs directly in the browser.
+- Requires a Chromium-based browser (Chrome, Edge) for the folder picker.
+- Re-picking a folder resets annotations.
