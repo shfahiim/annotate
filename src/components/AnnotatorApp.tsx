@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import CropModal from './CropModal'
 
 type Annotations = Record<string, string>
-type ImageFile = { name: string; url: string }
+type ImageFile = { name: string; url: string; handle: FileSystemFileHandle | null }
 
 const NUM_KEYS = ['1','2','3','4','5','6','7','8','9','0']
 
@@ -15,7 +16,7 @@ export default function AnnotatorApp() {
   const [started, setStarted] = useState(false)
   const [dark, setDark] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
-  // settings draft state
+  const [cropOpen, setCropOpen] = useState(false)
   const [draftLabels, setDraftLabels] = useState(['Positive', 'Negative'])
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function AnnotatorApp() {
       for await (const entry of (dir as any).values()) {
         if (entry.kind === 'file' && /\.(jpg|jpeg|png|gif|webp|avif|bmp)$/i.test(entry.name)) {
           const file = await entry.getFile()
-          files.push({ name: entry.name, url: URL.createObjectURL(file) })
+          files.push({ name: entry.name, url: URL.createObjectURL(file), handle: entry })
         }
       }
       files.sort((a, b) => a.name.localeCompare(b.name))
@@ -54,17 +55,18 @@ export default function AnnotatorApp() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || settingsOpen) return
+      if (e.target instanceof HTMLInputElement || settingsOpen || cropOpen) return
       if (e.key === 'p' || e.key === 'P') applyLabel(labels[0])
       if (e.key === 'n' || e.key === 'N') applyLabel(labels[1])
       if (e.key === 'ArrowRight') navigate(1)
       if (e.key === 'ArrowLeft') navigate(-1)
+      if (e.key === 'c' || e.key === 'C') setCropOpen(true)
       const numIdx = NUM_KEYS.indexOf(e.key)
       if (numIdx !== -1 && labels[numIdx]) applyLabel(labels[numIdx])
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [applyLabel, navigate, labels, settingsOpen])
+  }, [applyLabel, navigate, labels, settingsOpen, cropOpen])
 
   const exportData = (format: 'json' | 'csv') => {
     const entries = Object.entries(annotations).map(([filename, label]) => ({ filename, label }))
@@ -128,6 +130,9 @@ export default function AnnotatorApp() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={current.url} alt={current.name} className="image-content" />
                 {currentLabel && <div className={`label-badge ${badgeClass}`}>{currentLabel}</div>}
+                <button className="crop-trigger" onClick={() => setCropOpen(true)}>
+                  ✂ Crop
+                </button>
               </div>
               <p className="filename">{current.name}</p>
             </>
@@ -195,6 +200,7 @@ export default function AnnotatorApp() {
                 <div key={i} className="qr-row"><kbd>{NUM_KEYS[i + 2]}</kbd><span>{l}</span></div>
               ))}
               <div className="qr-row"><kbd>←</kbd><kbd>→</kbd><span>Navigate</span></div>
+              <div className="qr-row"><kbd>C</kbd><span>Crop image</span></div>
             </div>
             <p className="qr-hint">More labels? <button className="inline-link" onClick={openSettings}>Advanced Settings ↗</button></p>
           </div>
@@ -254,6 +260,21 @@ export default function AnnotatorApp() {
             </div>
           </div>
         </div>
+      )}
+      {/* Crop modal */}
+      {cropOpen && current && (
+        <CropModal
+          src={current.url}
+          filename={current.name}
+          fileHandle={current.handle}
+          onDone={(newUrl) => {
+            setImages((prev) => prev.map((img, i) =>
+              i === index ? { ...img, url: newUrl } : img
+            ))
+            setCropOpen(false)
+          }}
+          onCancel={() => setCropOpen(false)}
+        />
       )}
     </>
   )
