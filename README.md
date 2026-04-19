@@ -45,6 +45,14 @@ Up to 10 labels are supported. Open **Advanced Labels** in the sidebar to add ex
 
 Click **Save Labels** after editing, then use the number keys to annotate.
 
+## Crop Tool
+
+Press `C` or hover the image and click **✂ Crop** to open the crop editor.
+
+- Choose an aspect ratio: Free · 1:1 · 4:3 · 3:2 · 16:9 · 2:3
+- Drag the box to reposition, drag corners to resize
+- Click **Apply Crop** — the image is replaced in-memory and written back to the original file on disk (browser will ask for write permission once)
+
 ## Notes
 
 - Images never leave your machine — loaded as blob URLs directly in the browser.
